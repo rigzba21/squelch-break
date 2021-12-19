@@ -1,9 +1,10 @@
-
 // CoAP RFC 7252 3. Message Format
 // https://datatracker.ietf.org/doc/html/rfc7252#section-3
 
 //quiet warnings for unused code - for now...
 #![allow(dead_code)]
+
+use bytes::{Bytes, BytesMut, Buf, BufMut};
 
 struct Message {
     version: u8,
@@ -16,7 +17,7 @@ struct Message {
 
 struct Token {
     length: u8,
-    bytes: [u8; 8],
+    bytes: Bytes,
 }
 
 
