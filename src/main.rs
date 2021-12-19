@@ -2,6 +2,9 @@
 // CoAP RFC 7252 3. Message Format
 // https://datatracker.ietf.org/doc/html/rfc7252#section-3
 
+//quiet warnings for unused code - for now...
+#![allow(dead_code)]
+
 struct Message {
     version: u8,
     msg_type: u8,
@@ -16,10 +19,18 @@ struct Token {
     bytes: [u8; 8],
 }
 
+
 struct Options {
     option_delta: u8,
     option_length: u8,
-    //TODO: Option Value
+    option_val: OptionValue,
+}
+
+enum OptionValue {
+    Empty,
+    Opaque,
+    Uint,
+    OptString,
 }
 
 fn main() {
