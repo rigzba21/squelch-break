@@ -1,5 +1,5 @@
 # squelch-break
-A Rust library + binary for sending + receiving Constrained Application Protocol (CoAP) 
+A Rust CLI for sending and receiving Constrained Application Protocol (CoAP) 
 messages using the Concise Binary Object Representation (CBOR) data format.
 
 
