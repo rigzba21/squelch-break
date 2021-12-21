@@ -3,10 +3,6 @@ use std::net::SocketAddr;
 use std::{env, io};
 use tokio::net::UdpSocket;
 
-
-//local modules
-mod coap_message;
-
 struct Server {
     socket: UdpSocket,
     buf: Vec<u8>,
