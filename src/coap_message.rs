@@ -15,6 +15,7 @@ pub struct Message {
     message_id: u16,
     token: Token,
     options: Options,
+    payload: Bytes,
 }
 
 struct Token {
