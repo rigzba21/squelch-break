@@ -1,11 +1,13 @@
-// CoAP RFC 7252 3. Message Format
-// https://datatracker.ietf.org/doc/html/rfc7252#section-3
-
 //quiet warnings for unused code for now
 #![allow(dead_code)]
 
 use bytes::{Bytes};
 
+use crate::cbor::{placeholder};
+
+
+// CoAP RFC 7252 3. Message Format
+// https://datatracker.ietf.org/doc/html/rfc7252#section-3
 pub struct Message {
     version: u8,
     msg_type: u8,
@@ -20,7 +22,6 @@ struct Token {
     bytes: Bytes,
 }
 
-
 struct Options {
     option_delta: u8,
     option_length: u8,
@@ -33,6 +34,5 @@ enum OptionValue {
     Uint,
     OptString,
 }
-
 
 

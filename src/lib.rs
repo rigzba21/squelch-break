@@ -1,4 +1,5 @@
 pub mod coap_message;
+pub mod cbor;
 
 #[cfg(test)]
 mod tests {
