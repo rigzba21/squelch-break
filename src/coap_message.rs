@@ -9,23 +9,23 @@ use crate::cbor::{placeholder};
 // CoAP RFC 7252 3. Message Format
 // https://datatracker.ietf.org/doc/html/rfc7252#section-3
 pub struct Message {
-    version: u8,
-    msg_type: u8,
-    code: u8,
-    message_id: u16,
+    version: Bytes,
+    msg_type: Bytes,
+    code: Bytes,
+    message_id: Bytes,
     token: Token,
     options: Options,
     payload: Bytes,
 }
 
 struct Token {
-    length: u8,
+    length: Bytes,
     bytes: Bytes,
 }
 
 struct Options {
-    option_delta: u8,
-    option_length: u8,
+    option_delta: Bytes,
+    option_length: Bytes,
     option_val: OptionValue,
 }
 
