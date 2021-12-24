@@ -1,11 +1,5 @@
-pub mod coap_message;
-pub mod cbor;
+//import modules
+mod coap;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
-}
+pub use crate::coap::{Message, Token, Options};
+
