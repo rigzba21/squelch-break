@@ -7,7 +7,7 @@ Attempting to implement:
 * [CBOR RFC 8949](https://cbor.io/)
 
 TODO: 
-- [ ] Use [tokio-rs/mio](https://github.com/tokio-rs/mio) instead of full tokio runtime. 
+- [ ] Use [Rust `std::net` primitives](https://doc.rust-lang.org/std/net/#) to reduce dependencies + target binary size 
 
 ### Building
 `make all`
