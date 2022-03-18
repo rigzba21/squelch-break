@@ -2,6 +2,8 @@
 A Rust library and CLI sending and receiving Constrained Application Protocol (CoAP) 
 messages using the Concise Binary Object Representation (CBOR) data format.
 
+TODO: 
+- [ ] Use [tokio-rs/mio](https://github.com/tokio-rs/mio) instead of full tokio runtime. 
 
 ### Building
 `make all`
