@@ -1,10 +1,16 @@
-all: build_cli start_server
+all: build_sbhandler build_sbrunner
 
-build_cli:
-	cargo build --bin sb --release
+build_sbhandler:
+	cargo build --bin sbhandler
 
-start_server:
-	cargo run --bin sb-server
+build_sbrunner:
+	cargo build --bin sbrunner
+
+run_handler:
+	RUST_LOG=trace cargo run --bin sbhandler
+
+run_runner:
+	RUST_LOG=trace cargo run --bin sbrunner
 
 clean:
 	rm -rf target	
