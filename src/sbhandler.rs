@@ -13,6 +13,8 @@ use uuid::Uuid;
 use chrono::{Utc};
 use log::{debug, error, log_enabled, info, Level};
 
+// Message Types
+static KEY_EXCHANGE_REQ: u8 = 1;
 
 struct SquelchBreakHandler {
     uuid: Uuid,
@@ -21,14 +23,34 @@ struct SquelchBreakHandler {
     buffer: Vec<u8>,
     to_send: Option<(usize, SocketAddr)>,
     message_queue: VecDeque<Message>,
+    peers: Vec<Peer>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Hash)]
-pub struct Message {
-    message_id: u64, //hash value of sender_id + message_payload 
+struct Peer {
+    uuid: String,
+    ip: String,
+}
+
+//TODO: Routing impl 
+/*
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Hash)]
+struct RouteTable {
+    //TODO: Link-State like implementation???
+
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Hash)]
+struct Route {
+    peer: Peer
+    distance: u8,
+}*/
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Hash)]
+struct Message {
+    message_type: u8,
     uuid: String, //sender uuid
     message_payload: String, //message payload
-    timestamp: i64    
 }
 
 impl SquelchBreakHandler {
@@ -43,27 +65,41 @@ impl SquelchBreakHandler {
             mut buffer,
             mut to_send,
             mut message_queue,
+            mut peers,
         } = self;
 
         loop {
             if let Some((size, _sender)) = to_send {
-                println!("Received message from: {:#?}", _sender);
+                info!("Received message from: {:#?}", _sender);
 
-                //verify authenticated message and decrypt
-                let verify = aead::open(&secretkey, &buffer[..size]);
-                
-                match verify {
-                    //authenticated message success...
-                    Ok(_message) => {
-                        //TODO: message processing
+                let msg = String::from_utf8(Vec::from(&buffer[..size]));
+                //println!("{:#?}", msg);
+
+                match msg {
+                    Ok(message) => {
+                        println!("{:#?}", message);
+                        if message.contains("\"message_type\": 1") {
+                            process_key_exchange_request(&message);
+                        }
+
                     },
-                    Err(e) => println!("Unable to authenticate and verify message: {}", e)
+                    _ => error!("Could not parse message"),
                 }
+                
             }
 
             //else empty message, do nothing and just wait to fill the receive buffer...
             to_send = Some(socket.recv_from(&mut buffer).await?);
         }
+    }
+}
+
+//process key exchange request
+fn process_key_exchange_request(raw_message: &str)  {
+    let kex_msg: Result<Message, serde_json::Error>  = serde_json::from_str(raw_message);
+    match kex_msg {
+        Ok(msg) => println!("{:#?}", msg),
+        _ => error!("Error deserializing message")
     }
 }
 
@@ -88,6 +124,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("sbhandler initialized and listening at {}", addr);
 
     let secretkey = aead::SecretKey::default();
+    
+    let mut message_queue: VecDeque<Message> = VecDeque::new();
+    let mut peers: Vec<Peer> = Vec::new();
 
     let sbhandler = SquelchBreakHandler {
         uuid,
@@ -95,7 +134,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         secretkey,
         buffer: vec![0; 1024], //1024 bytes buffer
         to_send: None,
-        message_queue: VecDeque::new(),
+        message_queue: message_queue,
+        peers,
     };
 
     //start the event loop
