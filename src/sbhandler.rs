@@ -4,8 +4,10 @@ use std::net::SocketAddr;
 use std::{env, io};
 use tokio::net::UdpSocket;
 use orion::aead;
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
+use orion::kex::*;
+use std::collections::VecDeque;
+//use std::collections::hash_map::DefaultHasher;
+//use std::hash::{Hash, Hasher};
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use chrono::{Utc};
@@ -17,7 +19,8 @@ struct SquelchBreakHandler {
     socket: UdpSocket,
     secretkey: aead::SecretKey,
     buffer: Vec<u8>,
-    to_send: Option<(usize, SocketAddr)>, 
+    to_send: Option<(usize, SocketAddr)>,
+    message_queue: VecDeque<Message>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Hash)]
@@ -39,6 +42,7 @@ impl SquelchBreakHandler {
             secretkey,
             mut buffer,
             mut to_send,
+            mut message_queue,
         } = self;
 
         loop {
@@ -63,6 +67,13 @@ impl SquelchBreakHandler {
     }
 }
 
+//initialize an Ephemeral Private Key Exchange session 
+//for securely transmitting private key to peers
+fn init_peers_key_exchange(peers: Vec<SocketAddr>) {
+   let ephemeral_session_server = EphemeralServerSession::new().unwrap();
+
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
@@ -82,8 +93,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         uuid,
         socket,
         secretkey,
-        buffer: vec![0; 1024],
+        buffer: vec![0; 1024], //1024 bytes buffer
         to_send: None,
+        message_queue: VecDeque::new(),
     };
 
     //start the event loop
