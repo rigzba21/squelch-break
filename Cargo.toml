@@ -1,21 +1,8 @@
 [package]
 name = "squelch-break"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bin]]
-name = "sbhandler"
-path = "src/sbhandler.rs"
-
 [dependencies]
-serde = { version = "1.0.136", features = ["derive"] }
-serde_json = "1.0.79"
-tokio = { version = "1.16.1", features = ["full"] }
-tokio-test = "0.4.2"
-orion = "0.17.1"
-uuid = { version = "0.8.2", features = ["v4"] }
-chrono = "0.4.19"
-log = "0.4.0"
-env_logger = "0.8.4"
