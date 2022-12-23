@@ -1,6 +1,6 @@
 # squelch-break
-A secure distributed task execution framework using authenticated + encrypted messages.
-test
+A small network framework using authenticated + encrypted messages.
+
 ## Overview
 
 ### Roadmap
